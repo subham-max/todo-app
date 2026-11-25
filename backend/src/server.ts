@@ -1,11 +1,9 @@
 
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const pool = require("../src/config/db.js").default;
-const authRoutes = require("./routes/auth.routes.js").default;
-
-dotenv.config();
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import pool from "./config/db.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -15,13 +13,13 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 
 
-app.get("/", (req:any, res:any) => {
+app.get("/", (_req, res) => {
   res.json({ 
     message: "Todo API is running",
   });
 });
 
-app.get("/db-test", async (req:any, res:any) => {
+app.get("/db-test", async (_req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
 

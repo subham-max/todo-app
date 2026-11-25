@@ -1,12 +1,11 @@
 
 import type { Request, Response } from "express";
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import prisma from "../config/prisma.js";
+import { loginSchema } from "../validators/auth.validators.js";
 
-const prisma = require("../config/prisma.js").default;
-const { loginSchema } = require("../validators/auth.validators.js");
-
-const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   try {
     // 1. Validate request
     const validation = loginSchema.safeParse(req.body);
@@ -87,5 +86,3 @@ const login = async (req: Request, res: Response) => {
     });
   }
 };
-
-module.exports = { login };
