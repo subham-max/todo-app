@@ -1,35 +1,47 @@
-# React + TypeScript + Vite
+# Daylist frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The frontend is a React, TypeScript, and Vite application organized by product
+feature. Routes and app-wide concerns live under `src/app`, product capabilities
+live under `src/features`, and reusable, domain-agnostic UI and API transport
+live under `src/shared`.
 
-Currently, two official plugins are available:
+## Project structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```text
+src/
+  app/                 App composition, routing, providers, route guards
+  features/
+    auth/              Sign-in screens, API contract, and session state
+    todos/             Task views, task editor, and local task repository
+  shared/
+    api/               Common fetch client and provider
+    components/        Reusable UI primitives
+    styles/            Global styles and design tokens
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Add a product capability as a new folder under `features` and keep its pages,
+components, API calls, and types together. Register its routes in
+`src/app/App.tsx`. Keep shared components independent of feature-specific
+business rules.
+
+## Local development
+
+```sh
+npm install
+cp .env.example .env
+npm run dev
+npm run lint
+npm run build
+```
+
+`VITE_API_BASE_URL` points to the API root (including `/api`). The shared
+`ApiProvider` attaches the current bearer token and centralizes JSON/error
+handling. Sign-in calls `POST /auth/login`. The returned token and user are kept
+in `sessionStorage` for the current browser tab. For production, prefer
+HttpOnly secure cookies once the backend supports them.
+
+The backend does not currently expose account registration or task endpoints.
+Sign-up is shown as a UI entry point but does not submit data. Todo create,
+edit, complete, filter, search, and delete currently operate in browser storage,
+scoped by user ID, so the interface can be reviewed while the task API contract
+is being designed.
